@@ -1,11 +1,9 @@
-//rqH4p3w3b1wm7ACN
 const express = require('express');
 const mongoose = require('mongoose');
 
 const app = express();
 
-const DB_HOST =
-  'mongodb+srv://Lera:rqH4p3w3b1wm7ACN@cluster0.hqkqztb.mongodb.net/reader?retryWrites=true&w=majority&appName=Cluster0';
+const { DB_HOST } = process.env;
 
 mongoose
   .connect(DB_HOST)

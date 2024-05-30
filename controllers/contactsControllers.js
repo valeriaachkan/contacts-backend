@@ -1,17 +1,17 @@
-const contactsService = require('../services/contactsServices');
-const HttpError = require('../helpers/HttpError');
-const cntrlWrapper = require('../helpers/cntrlWrapper');
+const { HttpError, cntrlWrapper } = require('../helpers');
+
+const { Contact } = require('../models/contact');
 
 // @ GET /api/contacts
 const getAllContacts = async (req, res) => {
-  const result = await contactsService.allContacts();
+  const result = await Contact.find();
   res.json(result);
 };
 
 // @ GET /api/contacts/:id
 const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsService.getContactById(id);
+  const result = await Contact.findOne({ _id: id });
   if (!result) {
     throw HttpError(404);
   }
@@ -20,14 +20,24 @@ const getOneContact = async (req, res) => {
 
 // @ POST /api/contacts
 const createContact = async (req, res) => {
-  const result = await contactsService.addContact(req.body);
+  const result = await Contact.create(req.body);
   res.status(201).json(result);
 };
 
 // @ PUT /api/contacts/:id
 const updateContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsService.updateContact(id, req.body);
+  const result = await Contact.findOneAndUpdate({ _id: id }, req.body);
+  if (!result) {
+    throw HttpError(404);
+  }
+  res.json(result);
+};
+
+// @ PATCH /api/contacts/:contactId/favorite
+const updateStatusContact = async (req, res) => {
+  const { id } = req.params;
+  const result = await Contact.findOneAndUpdate({ _id: id }, req.body);
   if (!result) {
     throw HttpError(404);
   }
@@ -37,7 +47,7 @@ const updateContact = async (req, res) => {
 // @ DELETE /api/contacts/:id
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const result = await contactsService.removeContact(id);
+  const result = await Contact.findOneAndDelete({ _id: id });
   if (!result) {
     throw HttpError(404);
   }
@@ -50,4 +60,5 @@ module.exports = {
   deleteContact: cntrlWrapper(deleteContact),
   createContact: cntrlWrapper(createContact),
   updateContact: cntrlWrapper(updateContact),
+  updateStatusContact: cntrlWrapper(updateStatusContact),
 };

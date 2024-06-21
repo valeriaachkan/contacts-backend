@@ -1,6 +1,6 @@
 const { HttpError, cntrlWrapper } = require('../helpers');
 
-const { Contact } = require('../models/contact');
+const { Contact } = require('../routes/contact');
 
 // @ GET /api/contacts
 const getAllContacts = async (req, res) => {
@@ -27,7 +27,9 @@ const createContact = async (req, res) => {
 // @ PUT /api/contacts/:id
 const updateContact = async (req, res) => {
   const { id } = req.params;
-  const result = await Contact.findOneAndUpdate({ _id: id }, req.body);
+  const result = await Contact.findOneAndUpdate({ _id: id }, req.body, {
+    new: true,
+  });
   if (!result) {
     throw HttpError(404);
   }
@@ -37,7 +39,9 @@ const updateContact = async (req, res) => {
 // @ PATCH /api/contacts/:contactId/favorite
 const updateStatusContact = async (req, res) => {
   const { id } = req.params;
-  const result = await Contact.findOneAndUpdate({ _id: id }, req.body);
+  const result = await Contact.findOneAndUpdate({ _id: id }, req.body, {
+    new: true,
+  });
   if (!result) {
     throw HttpError(404);
   }
